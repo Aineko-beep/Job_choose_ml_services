@@ -16,11 +16,8 @@
 
 ## Технологический стек
 
-- **Frontend**: Streamlit
-- **Backend**: Python
 - **ML**: NumPy, кастомные алгоритмы
 - **AI**: GigaChat API от СБЕРа
-- **Environment**: .env для конфигурации
 
 ## Установка и запуск
 
@@ -85,3 +82,51 @@ Job_choose_ml_services/
 ### Настройка промпта
 
 Промпт для GigaChat находится в файле `prompt_motivation.txt`. Вы можете изменить его для настройки стиля рекомендаций.
+
+## Использование в backend-проектах
+
+### API интеграция
+
+Вы можете интегрировать ML-логику в другие проекты:
+
+```python
+from ml_logic import calculate_profile, recommend
+from gigachat_client import generate_personalized_text
+
+# Получение рекомендаций
+answers = [5, 4, 3, 5, 4]  # Ответы пользователя
+profile = calculate_profile(answers)
+results = recommend(profile)
+
+# Генерация персонализированного текста
+formatted_results = [f"{profession} ({score*100:.1f}%)"
+                     for profession, score in results]
+explanation = generate_personalized_text(profile, formatted_results)
+```
+
+### Конфигурация для продакшена
+
+Для использования в production:
+
+1. **Переменные окружения**:
+
+```bash
+GIGACHAT_AUTH_KEY=your_production_key
+```
+
+2. **Модификация промпта**:
+
+- Отредактируйте `prompt_motivation.txt` под ваши требования
+- Измените плейсхолдеры при необходимости
+- Адаптируйте стиль под ваш бренд
+
+3. **Кэширование**:
+
+```python
+# Рекомендуется кэшировать результаты для одинаковых профилей
+import functools
+
+@functools.lru_cache(maxsize=100)
+def cached_recommendations(answers_tuple):
+    return recommend(calculate_profile(list(answers_tuple)))
+```
