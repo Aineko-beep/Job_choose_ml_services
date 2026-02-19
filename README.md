@@ -59,7 +59,6 @@ Job_choose_ml_services/
 ├── ml_logic.py           # ML-логика для анализа профилей
 ├── prompt_motivation.txt  # Шаблон промпта для GigaChat
 ├── requirements.txt      # Зависимости Python
-├── .env                  # Переменные окружения
 └── README.md            # Этот файл
 ```
 
@@ -102,31 +101,4 @@ results = recommend(profile)
 formatted_results = [f"{profession} ({score*100:.1f}%)"
                      for profession, score in results]
 explanation = generate_personalized_text(profile, formatted_results)
-```
-
-### Конфигурация для продакшена
-
-Для использования в production:
-
-1. **Переменные окружения**:
-
-```bash
-GIGACHAT_AUTH_KEY=your_production_key
-```
-
-2. **Модификация промпта**:
-
-- Отредактируйте `prompt_motivation.txt` под ваши требования
-- Измените плейсхолдеры при необходимости
-- Адаптируйте стиль под ваш бренд
-
-3. **Кэширование**:
-
-```python
-# Рекомендуется кэшировать результаты для одинаковых профилей
-import functools
-
-@functools.lru_cache(maxsize=100)
-def cached_recommendations(answers_tuple):
-    return recommend(calculate_profile(list(answers_tuple)))
 ```
