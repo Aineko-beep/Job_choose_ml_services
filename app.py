@@ -1,5 +1,6 @@
 import streamlit as st
 from ml_logic import QUESTIONS, calculate_profile, recommend
+from gigachat_client import generate_personalized_text
 
 st.set_page_config(page_title="AI IT Navigator", page_icon="🚀")
 
@@ -21,8 +22,15 @@ if st.button("Получить рекомендации"):
 
     st.subheader("🎯 Вам больше всего подходят:")
 
+    formatted_results = []
     for profession, score in results:
-        st.write(f"**{profession}** — совпадение {round(score*100, 1)}%")
+        percent = round(score * 100, 1)
+        st.write(f"**{profession}** — совпадение {percent}%")
+        formatted_results.append(f"{profession} ({percent}%)")
 
-    st.subheader("📊 Ваш профиль:")
-    st.json(profile)
+    st.subheader("🤖 Персональная рекомендация")
+
+    with st.spinner("Генерируем персональный разбор..."):
+        explanation = generate_personalized_text(profile, formatted_results)
+
+    st.write(explanation)
